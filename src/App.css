@@ -44,4 +44,8 @@ input {
   padding: 40px;
   
 }
-
+#add_Button{
+  margin: 10px;
+  background-color: #61dafb;
+  color: #282c34;
+}
