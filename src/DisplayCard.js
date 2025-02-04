@@ -1,15 +1,16 @@
 // src/App.js
 
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Container,Button } from 'reactstrap';
+import { Row, Col, Container, Button } from 'reactstrap';
 import PokemonCard from './PokemonCard'; // Import the PokemonCard component
 import Squad from './Squad'; // Import the Squad component
 import './App.css';
+import { useSquad } from './SquadContext'; // Import the useSquad hook
 
 function App() {
   const [cards, setCards] = useState([]); // State to store card data
   const [loading, setLoading] = useState(true); // State to handle loading state
-  const [selectedPokemons, setSelectedPokemons] = useState([]); // State for selected Pokémon
+  const { selectedPokemons, handleAddToSquad, handleRemoveFromSquad } = useSquad(); // Access context
 
   useEffect(() => {
     // Function to fetch Pokémon data including images
@@ -43,33 +44,32 @@ function App() {
     fetchCards(); // Call the fetch function
   }, []);
 
-  // Function to handle adding a Pokémon to the squad
-  const handleAddToSquad = (pokemon) => {
-    if (selectedPokemons.length < 6) {
-      setSelectedPokemons([...selectedPokemons, pokemon]);
-    } else {
-      alert('You can only add up to 6 Pokémon!');
-    }
-  };
+  // Determine if the "Battle" button is enabled
+  const isBattleEnabled = selectedPokemons.length >= 2;
 
-  // Function to handle removing a Pokémon from the squad
-  const handleRemoveFromSquad = (pokemon) => {
-    setSelectedPokemons(selectedPokemons.filter(p => p.name !== pokemon.name));
-  };
-   
-  //Determine if the "Battle" buttle is enabled
-  const isBattleEnabled = selectedPokemons.length === 2;
   return (
     <div>
       <Container className="mt-4">
+        {/* Display selected Pokémon at the top of the page */}
+        <Squad
+          selectedPokemons={selectedPokemons}
+          handleRemoveFromSquad={handleRemoveFromSquad}
+        />
+        {/* Battle Button */}
+        <div style={{ marginTop: '20px' }}>
+          <Button 
+            color="success" 
+            disabled={!isBattleEnabled} 
+            onClick={() => alert('Let the battle begin!')}
+          >
+            Battle
+          </Button>
+        </div>
+
         {loading ? (
           <h3>Loading...</h3> // Show a loading message while data is being fetched
         ) : (
           <Row>
-            <div>
-              <Button>Battle</Button>
-            </div>
-             
             <div className="search-field">
               <input type="text" placeholder="Search ..." />
             </div>
@@ -83,21 +83,7 @@ function App() {
           </Row>
         )}
 
-        {/* Display selected Pokémon in Squad component */}
-        <Squad
-          selectedPokemons={selectedPokemons}
-          handleRemoveFromSquad={handleRemoveFromSquad}
-        />
-         {/* Battle Button */}
-         <div style={{ marginTop: '20px' }}>
-          <Button 
-            color="success" 
-            disabled={!isBattleEnabled} 
-            onClick={() => alert('Let the battle begin!')}
-          >
-            Battle
-          </Button>
-        </div>
+        
       </Container>
     </div>
   );

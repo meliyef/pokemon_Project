@@ -1,29 +1,22 @@
+// src/PokemonCard.js
 
-import React, { useState } from 'react';
-import { Card, CardBody, CardTitle, CardText, Button, CardImg } from 'reactstrap';
+import React from 'react';
+import { Button } from 'reactstrap';
+import { useSquad } from './SquadContext'; // Use context hook
 
-function PokemonCard({ card, handleAddToSquad }) {
-   const[add,setAdd] = useState("add")
-   
+const PokemonCard = ({ card }) => {
+  const { handleAddToSquad } = useSquad(); // Access add-to-squad function from context
+
   return (
-    <div>
-      <Card>
-        <CardImg top width="100%" src={card.image} alt={card.name} />
-        <CardBody>
-          <CardTitle tag="h5">{card.name}</CardTitle>
-          <CardText>
-            This is a Pokémon card named {card.name}. Click the button to view more details.
-          </CardText>
-          <Button color="primary" href={`https://pokeapi.co/api/v2/pokemon/${card.name}`} target="_blank">
-            View Details
-          </Button>
-          <Button id="add_Button" onClick={() => handleAddToSquad(card)}>
-            Add
-          </Button>
-        </CardBody>
-      </Card>
+    <div className="pokemon-card">
+      <img src={card.image} alt={card.name} />
+      <h4>{card.name}</h4>
+      <p>Level: {card.level}</p>
+      <Button onClick={() => handleAddToSquad(card)} color="primary">
+        Add to Squad
+      </Button>
     </div>
   );
-}
+};
 
 export default PokemonCard;
